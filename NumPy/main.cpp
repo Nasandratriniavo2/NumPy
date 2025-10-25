@@ -4,7 +4,6 @@
 using namespace std;
 
 int main() {
-    // --- TON CODE EXISTANT (inchangé) ---
     // Tester zeros
     Ndarray<int> zeros = Ndarray<int>::zeros({2, 3});
     cout << "Tableau de zéros (int) : ";
@@ -81,8 +80,6 @@ int main() {
     } catch (const runtime_error& e) {
         cout << "Erreur : " << e.what() << endl; // Affiche : Impossible de calculer la somme d'un tableau vide.
     }
-
-    // --- NOUVEAUX TESTS POUR LES MÉTHODES AJOUTÉES ---
 
     cout << "\n=== TESTS DES NOUVELLES MÉTHODES ===" << endl;
 

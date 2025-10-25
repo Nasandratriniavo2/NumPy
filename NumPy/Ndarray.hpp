@@ -6,24 +6,14 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <string>
-#include <variant>
+#include <cmath>
+#include <algorithm>
+#include <random>
 
 using namespace std;
 
-/* // Forward declaration nécessaire pour utiliser NestedList
-template<typename T>
-class Ndarray;
- */
-// Définition du type imbriqué récursif avant la classe
-/* template<typename T>
-using NestedList = variant<T, vector<NestedList<T>>>;
- */
 template<typename T>
 class Ndarray {
-/* public:
-    // Utilise le type déjà défini en amont
-    using NestedListType = variant<T, vector<NestedList<T>>>;
- */
 private:
     vector<T> _data;
     vector<size_t> _shape;
@@ -31,14 +21,11 @@ private:
     size_t _ndim;
 
     void computeStrides();
-    /* void flattenAndSetShape(const vector<NestedListType>& list, vector<T>& data, vector<size_t>& shape, size_t depth);
-    void validateShape(const vector<NestedListType>& list, const vector<size_t>& shape, size_t depth);
- */
+
 public:
-    Ndarray(vector<T>& input_data, vector<size_t>& input_shape);
-    //Ndarray(initializer_list<NestedListType> init_list);
+    Ndarray(const vector<T>& input_data, const vector<size_t>& input_shape);
     
-    //Surcharge d'operateur
+    // Surcharge d'opérateur
     T operator()(initializer_list<size_t> indices) const;    
     Ndarray<T> operator*(const Ndarray<T>& other) const;
     
@@ -48,25 +35,51 @@ public:
     vector<size_t> shape() const;
     void reshape(vector<size_t> newShape);
 
-    //Methodes statiques pour creer des tableaux
+    // Méthodes statiques pour créer des tableaux
     static Ndarray<T> zeros(const vector<size_t>& shape);
     static Ndarray<T> ones(const vector<size_t>& shape);
     static Ndarray<T> arange(T start, T stop, T step = 1);
+    static Ndarray<T> eye(size_t n);
+    static Ndarray<T> random(const vector<size_t>& shape);
+    static Ndarray<T> linspace(T start, T stop, size_t num);
 
-    //Methodes pour calculer des statistiques
-    T sum(void) const; //Calcul la somme de tous les elements du tableau
-    T prod() const; //Calcul la somme de tous les elements du tableau
-    double mean(void) const; //Calcul la moyenne de tous les elements du tableau
-    T min(void) const; //Retourne le minmum
-    T max(void) const; //Retourne le maximum
+    // Méthodes pour calculer des statistiques
+    T sum(void) const;
+    T prod() const;
+    double mean(void) const;
+    T min(void) const;
+    T max(void) const;
     Ndarray<double> sqrt() const;
 
-    // Methode pour convertir le type
+    // Statistiques avancées
+    double var() const;
+    double std() const;
+    T median() const;
+    T percentile(double p) const;
+
+    // Opérations élément par élément
+    Ndarray<double> exp() const;
+    Ndarray<double> log() const;
+    Ndarray<T> abs() const;
+    Ndarray<double> pow(double exponent) const;
+
+    // Manipulation
+    Ndarray<T> flatten() const;
+
+    // Méthodes utilitaires
+    Ndarray<T> clip(T min_val, T max_val) const;
+    size_t argmin() const;
+    size_t argmax() const;
+    bool all() const;
+    bool any() const;
+    template<typename Predicate>
+    Ndarray<T> where(Predicate pred, T true_val, T false_val) const;
+
+    // Méthode pour convertir le type
     template<typename U>
     Ndarray<U> astype() const;
-
 };
 
 #include "Ndarray.tpp"
 
-#endif 
+#endif
